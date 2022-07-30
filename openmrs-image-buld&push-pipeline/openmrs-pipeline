@@ -1,0 +1,26 @@
+pipeline {
+    stages {
+        stage ( "source code management" ) {
+            steps {
+                git branch: 'main', url: 'https://github.com/prathamesh-pk/k8s.git'
+            }
+        }
+        stage ( "image build" ) {
+            steps {
+             sh 'docker build image -t pk:1.0 .'
+            }
+        }
+        stage ( "image push" ) {
+            steps {
+             script {
+                 withCredentials([string(credentialsId: 'openmrs', variable: 'openmrs')]) {
+                 sh 'docker login -u prathamesh69 -p ${openmrs}'   
+}
+                 sh 'docker push prathamesh69/pk:1.0'            
+            } 
+             
+
+            }
+        }
+    }
+}
